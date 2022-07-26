@@ -1,6 +1,6 @@
 /* eslint-disable array-callback-return */
 import React, { useEffect, useState } from "react";
-import { getCountryCodes, getImage } from "../utils/API/imagesAPI";
+import { getCountryCodes } from "../utils/API/imagesAPI";
 import {
   Button,
   Card,
@@ -51,7 +51,6 @@ export const Home = () => {
           name: codes[code].replace(/\s/g, "").replace(",", "").toUpperCase(),
         };
         setChoosedCountry(obj);
-        // loadImage(code);
       }
       if (
         index === randnumber &&
@@ -62,11 +61,7 @@ export const Home = () => {
       }
     });
   };
-  //   const loadImage = async (code) => {
-  //     let img = await getImage(`https://flagcdn.com/256x192/eu.png`);
-  //     let base64img = await btoa(String.fromCharCode(...new Uint8Array(img)));
-  //     setImageData(base64img);
-  //   };
+
   const handleHelp = () => {
     let randnumber = randomNumber(0, choosedCountry.name.length);
     if (helpText === "") {
@@ -282,7 +277,6 @@ export const Home = () => {
             <center>
               {Object.keys(choosedCountry).length > 0 && (
                 <>
-                  {/* <Image src={`data:image/png;base64,${imageData}`}></Image> */}
                   <Image
                     src={`https://flagcdn.com/256x192/${choosedCountry.code}.png`}
                   ></Image>

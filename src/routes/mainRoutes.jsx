@@ -4,7 +4,7 @@ import { Home, NotFound } from "../screens";
 
 const MainRoutes = () => {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/guess-the-country">
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/404" element={<NotFound />} />
