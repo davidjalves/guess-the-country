@@ -3,7 +3,8 @@ import { Routes, Route, Navigate, BrowserRouter } from "react-router-dom";
 import { Home, NotFound } from "../screens";
 
 const MainRoutes = () => {
-  return (
+  return ( 
+    
     <BrowserRouter basename="/guess-the-country">
       <Routes>
         <Route path="/" element={<Home />} />
