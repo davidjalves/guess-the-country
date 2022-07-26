@@ -10,10 +10,15 @@ export const getCountryCodes = () => {
     });
 };
 
-export const getImage = (url) => {
-  return fetch(url)
-    .then((response) => response.arrayBuffer())
-    .then((buf) => {
-      return buf;
-    });
-};
+// export const getImage = (url) => {
+//   return fetch(url, {
+//     method: "GET",
+//     mode: "no-cors",
+//   })
+//     .then((response) => response.arrayBuffer())
+//     .then((buf) => {
+//       return buf;
+//     });
+// };
+
+

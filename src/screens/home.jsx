@@ -12,16 +12,20 @@ import {
 } from "react-bootstrap";
 import OtpInput from "react-otp-input";
 export const Home = () => {
-  const time_seconds = 5;
-
+  const time_seconds = 120;
+  const max_word_size = 10;
+  const [newRecord, setNewRecord] = useState(false);
   const [helpText, setHelpText] = useState("");
   const [inputText, setInputText] = useState("");
   const [hiddenHelp, setHiddenHelp] = useState(true);
   const [choosedCountry, setChoosedCountry] = useState({});
-  const [imageData, setImageData] = useState("");
+  //   const [imageData, setImageData] = useState("");
   const [seconds, setSeconds] = useState(time_seconds);
   const [correct, setCorrect] = useState("");
   const [score, setScore] = useState(0);
+  const [maxScore, setMaxScore] = useState(0);
+  const [codes, setCodes] = useState({});
+  const [start, setStart] = useState(false);
   var helpword;
   // Function to generate random number
   function randomNumber(min, max) {
@@ -34,35 +38,35 @@ export const Home = () => {
       string.substring(index + replacement.length)
     );
   }
-
-  const loadCountry = async () => {
+  const loadCodes = async () => {
     let countryc = await getCountryCodes();
-    let randnumber = await randomNumber(0, Object.keys(countryc).length - 1);
-    Object.keys(countryc).map((code, index) => {
+    setCodes(countryc);
+  };
+  const loadCountry = () => {
+    let randnumber = randomNumber(0, Object.keys(codes).length - 1);
+    Object.keys(codes).map((code, index) => {
       if (index === randnumber && !code.startsWith("us-")) {
         let obj = {
           code: code,
-          name: countryc[code]
-            .replace(/\s/g, "")
-            .replace(",", "")
-            .toUpperCase(),
+          name: codes[code].replace(/\s/g, "").replace(",", "").toUpperCase(),
         };
         setChoosedCountry(obj);
-        loadImage(code);
-      } else if (
+        // loadImage(code);
+      }
+      if (
         index === randnumber &&
-        (code.startsWith("us-") || countryc[code].length > 20)
+        (code.startsWith("us-") || codes[code].length > max_word_size)
       ) {
         setChoosedCountry({});
         loadCountry();
       }
     });
   };
-  const loadImage = async (code) => {
-    let img = await getImage(`https://flagcdn.com/256x192/${code}.png`);
-    let base64img = btoa(String.fromCharCode(...new Uint8Array(img)));
-    setImageData(base64img);
-  };
+  //   const loadImage = async (code) => {
+  //     let img = await getImage(`https://flagcdn.com/256x192/eu.png`);
+  //     let base64img = await btoa(String.fromCharCode(...new Uint8Array(img)));
+  //     setImageData(base64img);
+  //   };
   const handleHelp = () => {
     let randnumber = randomNumber(0, choosedCountry.name.length);
     if (helpText === "") {
@@ -71,7 +75,6 @@ export const Home = () => {
     if (helpText !== "") {
       helpword = helpText;
     }
-    console.log("rand", randnumber);
     if (helpText !== choosedCountry.name) {
       for (let letter = 0; letter < choosedCountry.name.length; letter++) {
         if (letter === randnumber && helpword !== "") {
@@ -79,7 +82,6 @@ export const Home = () => {
             helpword = replaceAt(helpword, letter, choosedCountry.name[letter]);
             setHelpText(helpword);
           } else {
-            console.log("igual");
             handleHelp();
           }
         } else {
@@ -90,9 +92,8 @@ export const Home = () => {
         }
       }
     }
-    if (helpText === choosedCountry.name) {
-      console.log("It already filled all spaces");
-    }
+    // if (helpText === choosedCountry.name) {
+    // }
   };
 
   const verifyAnswer = () => {
@@ -102,13 +103,15 @@ export const Home = () => {
       if (helpText.length > 0) {
         newhelpword = helpText.split("*").join("");
       }
-      setScore((prev) => prev + 50 - newhelpword.length * 2);
-
+      setScore(
+        (prev) =>
+          prev + 10 * choosedCountry.name.length - newhelpword.length * 2
+      );
+      setInputText("");
+      setHelpText("");
       setTimeout(() => {
-        loadCountry();
-        setInputText("");
-        setHelpText("");
         setCorrect("");
+        loadCountry();
       }, 1000);
     } else {
       setCorrect(false);
@@ -117,22 +120,37 @@ export const Home = () => {
   const popover = (
     <Popover id="popover-basic">
       <Popover.Body>
-        For every correct answer: + 50 points<br></br>
-        For every hint used: - 2 points
+        <b>For every correct answer:</b> <br></br>+ ( 10 x length of word)
+        points<br></br>
+        <b>For every hint used:</b> <br></br> - 2 points
       </Popover.Body>
     </Popover>
   );
   useEffect(() => {
-    loadCountry();
+    loadCodes();
+
+    if (Number(JSON.parse(window.localStorage.getItem("record"))) > 0) {
+      setMaxScore(JSON.parse(window.localStorage.getItem("record")));
+    }
   }, []);
 
   useEffect(() => {
-    if (seconds > 0) {
-      setTimeout(() => setSeconds(seconds - 1), 1000);
+    window.localStorage.setItem("record", JSON.stringify(`${maxScore}`));
+  }, [maxScore]);
+
+  useEffect(() => {
+    if (seconds > 0 && start === true) {
+      setTimeout(() => {
+        setSeconds((prev) => prev - 1);
+      }, 1000);
     } else {
-      console.log("end");
+      //end
+      if (Number(score) > Number(maxScore)) {
+        setMaxScore(score);
+        setNewRecord(true);
+      }
     }
-  });
+  }, [seconds, start]);
   return (
     <>
       <div
@@ -160,7 +178,26 @@ export const Home = () => {
         >
           Guess the country
         </div>
-        {seconds === 0 && (
+        {start === false && (
+          <div
+            style={{
+              display: "flex",
+              paddingBottom: "12mm",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Button
+              onClick={() => {
+                setStart(true);
+                loadCountry();
+              }}
+            >
+              START
+            </Button>
+          </div>
+        )}
+        {seconds === 0 && start === true && (
           <Card>
             <Card.Title>
               <center>GAME OVER</center>
@@ -168,7 +205,11 @@ export const Home = () => {
             <Card.Body>
               <center>
                 Your score in this game: {score} points<br></br>Your highest
-                score: {score} points
+                score: {maxScore} points
+                <br></br>
+                {newRecord === true && (
+                  <div style={{ color: "green" }}>NEW RECORD!</div>
+                )}
                 <br></br>
                 <br></br>
                 <Row>
@@ -188,6 +229,7 @@ export const Home = () => {
                       setHelpText("");
                       setCorrect("");
                       setScore(0);
+                      setNewRecord(false);
                     }}
                   >
                     RESTART GAME
@@ -217,7 +259,7 @@ export const Home = () => {
             </Card.Body>
           </Card>
         )}
-        {seconds > 0 && (
+        {seconds > 0 && start === true && (
           <>
             <div
               className="font-link"
@@ -240,7 +282,11 @@ export const Home = () => {
             <center>
               {Object.keys(choosedCountry).length > 0 && (
                 <>
-                  <Image src={`data:image/png;base64,${imageData}`}></Image>
+                  {/* <Image src={`data:image/png;base64,${imageData}`}></Image> */}
+                  <Image
+                    src={`https://flagcdn.com/256x192/${choosedCountry.code}.png`}
+                  ></Image>
+
                   {correct !== "" && (
                     <div>
                       {correct === true ? (
@@ -278,7 +324,7 @@ export const Home = () => {
                     <OtpInput
                       isDisabled
                       containerStyle={{
-                        marginTop: "20px",
+                        marginTop: "10px",
                         display: "flex",
                         paddingLeft: "2mm",
                         alignItems: "center",
@@ -293,7 +339,7 @@ export const Home = () => {
 
                   <OtpInput
                     containerStyle={{
-                      marginTop: hiddenHelp === false ? "-65px" : "20px",
+                      marginTop: hiddenHelp === false ? "-65px" : "10px",
                       paddingBottom: "2mm",
                       backgroundColor:
                         hiddenHelp === false ? "transparent" : "",
@@ -310,7 +356,6 @@ export const Home = () => {
                     }}
                     value={inputText}
                     onChange={(otp) => {
-                      console.log(otp);
                       setInputText(otp);
                     }}
                     numInputs={choosedCountry.name.length}
@@ -345,7 +390,7 @@ export const Home = () => {
             </center>
           </>
         )}
-
+        <center>The countries flags are provided by flagpedia.net API</center>
         <center>David Ressurreição &copy; {new Date().getFullYear()}</center>
       </div>
     </>
