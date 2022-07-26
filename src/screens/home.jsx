@@ -1,18 +1,27 @@
 /* eslint-disable array-callback-return */
 import React, { useEffect, useState } from "react";
 import { getCountryCodes, getImage } from "../utils/API/imagesAPI";
-import { Button, Card, Col, Image } from "react-bootstrap";
+import {
+  Button,
+  Card,
+  Col,
+  Image,
+  OverlayTrigger,
+  Popover,
+  Row,
+} from "react-bootstrap";
 import OtpInput from "react-otp-input";
 export const Home = () => {
-  const [iniciar, setIniciar] = useState(false);
+  const time_seconds = 5;
+
   const [helpText, setHelpText] = useState("");
   const [inputText, setInputText] = useState("");
   const [hiddenHelp, setHiddenHelp] = useState(true);
   const [choosedCountry, setChoosedCountry] = useState({});
   const [imageData, setImageData] = useState("");
-  const [seconds, setSeconds] = useState(120);
+  const [seconds, setSeconds] = useState(time_seconds);
   const [correct, setCorrect] = useState("");
-
+  const [score, setScore] = useState(0);
   var helpword;
   // Function to generate random number
   function randomNumber(min, max) {
@@ -57,7 +66,7 @@ export const Home = () => {
   const handleHelp = () => {
     let randnumber = randomNumber(0, choosedCountry.name.length);
     if (helpText === "") {
-      helpword = "-".repeat(choosedCountry.name.length);
+      helpword = "*".repeat(choosedCountry.name.length);
     }
     if (helpText !== "") {
       helpword = helpText;
@@ -66,12 +75,8 @@ export const Home = () => {
     if (helpText !== choosedCountry.name) {
       for (let letter = 0; letter < choosedCountry.name.length; letter++) {
         if (letter === randnumber && helpword !== "") {
-          console.log(helpword[letter]);
-          if (helpword[letter] === "-") {
-            console.log("entrou");
-            console.log(helpword);
+          if (helpword[letter] === "*") {
             helpword = replaceAt(helpword, letter, choosedCountry.name[letter]);
-            console.log(helpword);
             setHelpText(helpword);
           } else {
             console.log("igual");
@@ -79,7 +84,7 @@ export const Home = () => {
           }
         } else {
           if (helpword[letter] !== choosedCountry.name[letter]) {
-            helpword = replaceAt(helpword, letter, "-");
+            helpword = replaceAt(helpword, letter, "*");
             setHelpText(helpword);
           }
         }
@@ -93,6 +98,11 @@ export const Home = () => {
   const verifyAnswer = () => {
     if (inputText.toUpperCase() === choosedCountry.name) {
       setCorrect(true);
+      let newhelpword = "";
+      if (helpText.length > 0) {
+        newhelpword = helpText.split("*").join("");
+      }
+      setScore((prev) => prev + 50 - newhelpword.length * 2);
 
       setTimeout(() => {
         loadCountry();
@@ -104,6 +114,14 @@ export const Home = () => {
       setCorrect(false);
     }
   };
+  const popover = (
+    <Popover id="popover-basic">
+      <Popover.Body>
+        For every correct answer: + 50 points<br></br>
+        For every hint used: - 2 points
+      </Popover.Body>
+    </Popover>
+  );
   useEffect(() => {
     loadCountry();
   }, []);
@@ -116,151 +134,220 @@ export const Home = () => {
     }
   });
   return (
-    <div
-      style={{
-        paddingLeft: "5mm",
-        paddingRight: "10mm",
-        textAlign: "justify",
-        textJustify: "inter-word",
-        position: "absolute",
-        left: "50%",
-        top: "50%",
-        transform: "translate(-50%, -50%)",
-      }}
-    >
+    <>
       <div
-        className="font-link"
         style={{
-          color: "#8d4303",
-          fontSize: 60,
-          display: "flex",
-          paddingLeft: "2mm",
-          alignItems: "center",
-          justifyContent: "center",
+          paddingLeft: "5mm",
+          paddingRight: "10mm",
+          textAlign: "justify",
+          textJustify: "inter-word",
+          position: "absolute",
+          left: "50%",
+          top: "50%",
+          transform: "translate(-50%, -50%)",
         }}
       >
-        Guess the country
-      </div>
-      <div
-        className="font-link"
-        style={{
-          fontSize: 60,
-          color: "#8d4303",
+        <div
+          className="font-link"
+          style={{
+            color: "#8d4303",
+            fontSize: 60,
+            display: "flex",
+            paddingLeft: "2mm",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          Guess the country
+        </div>
+        {seconds === 0 && (
+          <Card>
+            <Card.Title>
+              <center>GAME OVER</center>
+            </Card.Title>
+            <Card.Body>
+              <center>
+                Your score in this game: {score} points<br></br>Your highest
+                score: {score} points
+                <br></br>
+                <br></br>
+                <Row>
+                  <Button
+                    as={Col}
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignContent: "center",
+                      flexDirection: "column",
+                    }}
+                    variant="success"
+                    onClick={() => {
+                      setInputText("");
+                      loadCountry();
+                      setSeconds(time_seconds);
+                      setHelpText("");
+                      setCorrect("");
+                      setScore(0);
+                    }}
+                  >
+                    RESTART GAME
+                  </Button>
 
-          display: "flex",
-          paddingLeft: "2mm",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        {`${Math.floor(seconds / 60)
-          .toString()
-          .padStart(2, "0")}:${(seconds % 60).toString().padStart(2, "0")}`}
-      </div>
-      <center>
-        {Object.keys(choosedCountry).length > 0 && (
+                  <OverlayTrigger
+                    trigger="click"
+                    placement="top"
+                    overlay={popover}
+                  >
+                    <Button
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignContent: "center",
+                        flexDirection: "column",
+                      }}
+                      as={Col}
+                      variant="primary"
+                      onClick={() => {}}
+                    >
+                      HOW POINTS ARE CALCULATED
+                    </Button>
+                  </OverlayTrigger>
+                </Row>
+              </center>
+            </Card.Body>
+          </Card>
+        )}
+        {seconds > 0 && (
           <>
-            <Image src={`data:image/png;base64,${imageData}`}></Image>
-            {correct !== "" && (
-              <div>
-                {correct === true ? (
-                  <div
-                    style={{
-                      fontSize: 60,
-                      color: "green",
-                    }}
-                  >
-                    ✓
-                  </div>
-                ) : (
-                  <div
-                    style={{
-                      fontSize: 60,
-                      color: "red",
-                    }}
-                  >
-                    ❌
-                  </div>
-                )}
-              </div>
-            )}
-            {correct === "" && (
-              <div
-                style={{
-                  fontSize: 60,
-                  color: "transparent",
-                }}
-              >&bnsp;</div>
-            )}
-            {hiddenHelp === false && (
-              <OtpInput
-                isDisabled
-                containerStyle={{
-                  marginTop: "20px",
-                  display: "flex",
-                  paddingLeft: "2mm",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-                inputStyle={{ color: "gray", fontSize: 40 }}
-                value={helpText}
-                numInputs={choosedCountry.name.length}
-                separator={<span></span>}
-              />
-            )}
+            <div
+              className="font-link"
+              style={{
+                fontSize: 60,
+                color: "#8d4303",
 
-            <OtpInput
-              containerStyle={{
-                marginTop: hiddenHelp === false ? "-65px" : "20px",
-                paddingBottom: "2mm",
-                backgroundColor: hiddenHelp === false ? "transparent" : "",
                 display: "flex",
                 paddingLeft: "2mm",
                 alignItems: "center",
                 justifyContent: "center",
               }}
-              inputStyle={{
-                color: "black",
-                fontSize: 40,
-                backgroundColor: hiddenHelp === false ? "transparent" : "",
-              }}
-              value={inputText}
-              onChange={(otp) => {
-                console.log(otp);
-                setInputText(otp);
-              }}
-              numInputs={choosedCountry.name.length}
-              separator={<span></span>}
-            />
-            <br></br>
+            >
+              {`${Math.floor(seconds / 60)
+                .toString()
+                .padStart(2, "0")}:${(seconds % 60)
+                .toString()
+                .padStart(2, "0")}`}
+            </div>
+            <center>
+              {Object.keys(choosedCountry).length > 0 && (
+                <>
+                  <Image src={`data:image/png;base64,${imageData}`}></Image>
+                  {correct !== "" && (
+                    <div>
+                      {correct === true ? (
+                        <div
+                          style={{
+                            fontSize: 60,
+                            color: "green",
+                          }}
+                        >
+                          ✓
+                        </div>
+                      ) : (
+                        <div
+                          style={{
+                            fontSize: 60,
+                            color: "red",
+                          }}
+                        >
+                          ❌
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {correct === "" && (
+                    <div
+                      style={{
+                        fontSize: 60,
+                        color: "transparent",
+                      }}
+                    >
+                      &bnsp;
+                    </div>
+                  )}
+                  {hiddenHelp === false && (
+                    <OtpInput
+                      isDisabled
+                      containerStyle={{
+                        marginTop: "20px",
+                        display: "flex",
+                        paddingLeft: "2mm",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                      inputStyle={{ color: "gray", fontSize: 40 }}
+                      value={helpText}
+                      numInputs={choosedCountry.name.length}
+                      separator={<span></span>}
+                    />
+                  )}
 
-            <Button
-              onClick={() => {
-                verifyAnswer();
-              }}
-              variant="success"
-            >
-              CONFIRM
-            </Button>
-            <Button
-              onClick={() => {
-                setHiddenHelp(!hiddenHelp);
-              }}
-            >
-              {hiddenHelp === true ? "SHOW HINT" : "HIDE HINT"}
-            </Button>
-            <Button
-              onClick={() => {
-                handleHelp();
-              }}
-            >
-              NEW HINT
-            </Button>
+                  <OtpInput
+                    containerStyle={{
+                      marginTop: hiddenHelp === false ? "-65px" : "20px",
+                      paddingBottom: "2mm",
+                      backgroundColor:
+                        hiddenHelp === false ? "transparent" : "",
+                      display: "flex",
+                      paddingLeft: "2mm",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                    inputStyle={{
+                      color: "black",
+                      fontSize: 40,
+                      backgroundColor:
+                        hiddenHelp === false ? "transparent" : "",
+                    }}
+                    value={inputText}
+                    onChange={(otp) => {
+                      console.log(otp);
+                      setInputText(otp);
+                    }}
+                    numInputs={choosedCountry.name.length}
+                    separator={<span></span>}
+                  />
+                  <br></br>
+
+                  <Button
+                    onClick={() => {
+                      verifyAnswer();
+                    }}
+                    variant="success"
+                  >
+                    CONFIRM
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setHiddenHelp(!hiddenHelp);
+                    }}
+                  >
+                    {hiddenHelp === true ? "SHOW HINTS" : "HIDE HINTS"}
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      handleHelp();
+                    }}
+                  >
+                    NEW HINT
+                  </Button>
+                </>
+              )}
+            </center>
           </>
         )}
-      </center>      
-      <center>David Ressurreição &copy; {new Date().getFullYear()}</center>
 
-    </div>
+        <center>David Ressurreição &copy; {new Date().getFullYear()}</center>
+      </div>
+    </>
   );
 };
