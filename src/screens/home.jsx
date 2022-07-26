@@ -12,7 +12,7 @@ import {
 } from "react-bootstrap";
 import OtpInput from "react-otp-input";
 export const Home = () => {
-  const time_seconds = 120;
+  const time_seconds = 60;
   const max_word_size = 10;
   const [newRecord, setNewRecord] = useState(false);
   const [helpText, setHelpText] = useState("");
