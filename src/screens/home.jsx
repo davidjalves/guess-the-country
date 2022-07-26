@@ -120,14 +120,6 @@ export const Home = () => {
       </Popover.Body>
     </Popover>
   );
-  //   const KeyConfirm = (e) => {
-  //     //it triggers by pressing the enter key
-  //     console.log("a");
-
-  //     if (e.keyCode === 13) {
-  //       verifyAnswer();
-  //     }
-  //   };
 
   useEffect(() => {
     loadCodes();
@@ -155,19 +147,6 @@ export const Home = () => {
     }
   }, [seconds, start]);
 
-  useEffect(() => {
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        verifyAnswer();
-      }
-    });
-
-    return () => {
-      window.removeEventListener("keydown", (e) => {
-        console.log("removed listener");
-      });
-    };
-  }, [inputText]);
   return (
     <>
       <div
