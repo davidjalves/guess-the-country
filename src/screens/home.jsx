@@ -99,8 +99,7 @@ export const Home = () => {
         newhelpword = helpText.split("*").join("");
       }
       setScore(
-        (prev) =>
-          prev + 10 * choosedCountry.name.length - newhelpword.length * 2
+        (prev) => prev + 5 * choosedCountry.name.length - newhelpword.length * 2
       );
       setInputText("");
       setHelpText("");
@@ -115,12 +114,21 @@ export const Home = () => {
   const popover = (
     <Popover id="popover-basic">
       <Popover.Body>
-        <b>For every correct answer:</b> <br></br>+ ( 10 x length of word)
-        points<br></br>
+        <b>For every correct answer:</b> <br></br>+ ( 5 x length of word) points
+        <br></br>
         <b>For every hint used:</b> <br></br> - 2 points
       </Popover.Body>
     </Popover>
   );
+  //   const KeyConfirm = (e) => {
+  //     //it triggers by pressing the enter key
+  //     console.log("a");
+
+  //     if (e.keyCode === 13) {
+  //       verifyAnswer();
+  //     }
+  //   };
+
   useEffect(() => {
     loadCodes();
 
@@ -146,6 +154,20 @@ export const Home = () => {
       }
     }
   }, [seconds, start]);
+
+  useEffect(() => {
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        verifyAnswer();
+      }
+    });
+
+    return () => {
+      window.removeEventListener("keydown", (e) => {
+        console.log("removed listener");
+      });
+    };
+  }, [inputText]);
   return (
     <>
       <div
@@ -356,7 +378,6 @@ export const Home = () => {
                     separator={<span></span>}
                   />
                   <br></br>
-
                   <Button
                     onClick={() => {
                       verifyAnswer();
