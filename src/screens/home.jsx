@@ -308,11 +308,11 @@ export const Home = () => {
                   {correct === "" && (
                     <div
                       style={{
-                        fontSize: 60,
                         color: "transparent",
+                        height:"90px"
                       }}
                     >
-                      &bnsp;
+                      
                     </div>
                   )}
                   {hiddenHelp === false && (
