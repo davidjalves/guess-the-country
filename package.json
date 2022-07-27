@@ -2,7 +2,9 @@
   "name": "guess_the_country",
   "homepage": "https://davidjalves.github.io/guess-the-country",
   "version": "0.1.0",
-  "private": true,
+  "author": "David Ressurreição",
+  "license": "MIT",
+  "description": "Guess the country web game",
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
