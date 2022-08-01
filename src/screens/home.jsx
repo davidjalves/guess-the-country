@@ -170,11 +170,11 @@ export const Home = () => {
         <div
           className="font-link"
           style={{
-            fontSize: 60,
+            fontSize: 45,
             display: "flex",
             paddingLeft: "2mm",
-            alignItems: "center",
-            justifyContent: "center",
+            
+           
           }}
         >
           Guess the country
@@ -184,8 +184,8 @@ export const Home = () => {
             style={{
               display: "flex",
               paddingBottom: "12mm",
-              alignItems: "center",
-              justifyContent: "center",
+             
+              
             }}
           >
             <Button
@@ -204,12 +204,12 @@ export const Home = () => {
         {seconds === 0 && start === true && (
           <Card>
             <Card.Title>
-              <center className="font-link" style={{ fontSize: 20 }}>
+              <center className="font-link" style={{ fontSize: 30 }}>
                 GAME OVER
               </center>
             </Card.Title>
             <Card.Body>
-              <center className="font-link" style={{ fontSize: 20 }}>
+              <center className="font-link" style={{ fontSize: 30 }}>
                 Your score in this game: {score} points<br></br>Your highest
                 score: {maxScore} points
                 <br></br>
@@ -277,7 +277,7 @@ export const Home = () => {
             <div
               className="font-link"
               style={{
-                fontSize: 60,
+                fontSize: 45,
 
                 display: "flex",
                 paddingLeft: "2mm",
@@ -295,6 +295,7 @@ export const Home = () => {
               {Object.keys(choosedCountry).length > 0 && (
                 <>
                   <Image
+                  height={"120px"}
                     src={`https://flagcdn.com/256x192/${choosedCountry.code}.png`}
                   ></Image>
 
@@ -372,6 +373,7 @@ export const Home = () => {
                   />
                   <br></br>
                   <Button
+                  style={{margin:"2mm"}}
                     onClick={() => {
                       verifyAnswer();
                     }}
@@ -384,27 +386,29 @@ export const Home = () => {
                     </div>
                   </Button>
                   <Button
+                   style={{margin:"2mm"}}
                     onClick={() => {
                       setHiddenHelp(!hiddenHelp);
                     }}
                   >
                     {hiddenHelp === true ? (
-                      <div className="font-link" style={{ fontSize: 20 }}>
+                      <div className="font-link" style={{ fontSize: 20  }}>
                         SHOW HINTS
                       </div>
                     ) : (
-                      <div className="font-link" style={{ fontSize: 20 }}>
+                      <div className="font-link" style={{ fontSize: 20  }}>
                         HIDE HINTS
                       </div>
                     )}
                   </Button>
                   <Button
+                   style={{margin:"2mm"}}
                     onClick={() => {
                       handleHelp();
                     }}
                   >
                     {" "}
-                    <div className="font-link" style={{ fontSize: 20 }}>
+                    <div className="font-link" style={{ fontSize: 20  }}>
                       NEW HINT
                     </div>
                   </Button>
@@ -413,7 +417,7 @@ export const Home = () => {
             </center>
           </>
         )}
-        {start === false && (
+        {(start === false || (start === true && seconds === 0)) && (
           <>
             <center className="font-link" style={{ fontSize: 20 }}>
               The countries flags are provided by flagpedia.net API
