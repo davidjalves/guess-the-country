@@ -48,7 +48,15 @@ export const Home = () => {
       if (index === randnumber && !code.startsWith("us-")) {
         let obj = {
           code: code,
-          name: codes[code].replace(/\s/g, "").replace(",", "").toUpperCase(),
+          name: codes[code]
+            .replace(/\s/g, "")
+            .replace(",", "")
+            .replace("ç", "c")
+            .replace("é", "a")
+            .replace("á", "a")
+            .replace("ã", "a")
+            .replace("â", "a")
+            .toUpperCase(),
         };
         setChoosedCountry(obj);
       }
@@ -87,8 +95,6 @@ export const Home = () => {
         }
       }
     }
-    // if (helpText === choosedCountry.name) {
-    // }
   };
 
   const verifyAnswer = () => {
@@ -164,7 +170,6 @@ export const Home = () => {
         <div
           className="font-link"
           style={{
-            color: "#8d4303",
             fontSize: 60,
             display: "flex",
             paddingLeft: "2mm",
@@ -189,17 +194,22 @@ export const Home = () => {
                 loadCountry();
               }}
             >
-              START
+              <div className="font-link" style={{ fontSize: 20 }}>
+                {" "}
+                START
+              </div>
             </Button>
           </div>
         )}
         {seconds === 0 && start === true && (
           <Card>
             <Card.Title>
-              <center>GAME OVER</center>
+              <center className="font-link" style={{ fontSize: 20 }}>
+                GAME OVER
+              </center>
             </Card.Title>
             <Card.Body>
-              <center>
+              <center className="font-link" style={{ fontSize: 20 }}>
                 Your score in this game: {score} points<br></br>Your highest
                 score: {maxScore} points
                 <br></br>
@@ -228,7 +238,11 @@ export const Home = () => {
                       setNewRecord(false);
                     }}
                   >
-                    RESTART GAME
+                    {" "}
+                    <div className="font-link" style={{ fontSize: 20 }}>
+                      {" "}
+                      RESTART GAME
+                    </div>
                   </Button>
 
                   <OverlayTrigger
@@ -247,7 +261,10 @@ export const Home = () => {
                       variant="primary"
                       onClick={() => {}}
                     >
-                      HOW POINTS ARE CALCULATED
+                      {" "}
+                      <div className="font-link" style={{ fontSize: 20 }}>
+                        HOW POINTS ARE CALCULATED
+                      </div>
                     </Button>
                   </OverlayTrigger>
                 </Row>
@@ -261,7 +278,6 @@ export const Home = () => {
               className="font-link"
               style={{
                 fontSize: 60,
-                color: "#8d4303",
 
                 display: "flex",
                 paddingLeft: "2mm",
@@ -309,11 +325,9 @@ export const Home = () => {
                     <div
                       style={{
                         color: "transparent",
-                        height:"90px"
+                        height: "90px",
                       }}
-                    >
-                      
-                    </div>
+                    ></div>
                   )}
                   {hiddenHelp === false && (
                     <OtpInput
@@ -363,29 +377,58 @@ export const Home = () => {
                     }}
                     variant="success"
                   >
-                    CONFIRM
+                    {" "}
+                    <div className="font-link" style={{ fontSize: 20 }}>
+                      {" "}
+                      CONFIRM
+                    </div>
                   </Button>
                   <Button
                     onClick={() => {
                       setHiddenHelp(!hiddenHelp);
                     }}
                   >
-                    {hiddenHelp === true ? "SHOW HINTS" : "HIDE HINTS"}
+                    {hiddenHelp === true ? (
+                      <div className="font-link" style={{ fontSize: 20 }}>
+                        SHOW HINTS
+                      </div>
+                    ) : (
+                      <div className="font-link" style={{ fontSize: 20 }}>
+                        HIDE HINTS
+                      </div>
+                    )}
                   </Button>
                   <Button
                     onClick={() => {
                       handleHelp();
                     }}
                   >
-                    NEW HINT
+                    {" "}
+                    <div className="font-link" style={{ fontSize: 20 }}>
+                      NEW HINT
+                    </div>
                   </Button>
                 </>
               )}
             </center>
           </>
         )}
-        <center>The countries flags are provided by flagpedia.net API</center>
-        <center>David Ressurreição &copy; {new Date().getFullYear()}</center>
+        {start === false && (
+          <>
+            <center className="font-link" style={{ fontSize: 20 }}>
+              The countries flags are provided by flagpedia.net API
+            </center>
+            <center className="font-link" style={{ fontSize: 30 }}>
+              Made by{" "}
+              <a
+                href="https://github.com/davidjalves"
+                style={{ color: "black" }}
+              >
+                David Ressurreição
+              </a>
+            </center>
+          </>
+        )}
       </div>
     </>
   );
