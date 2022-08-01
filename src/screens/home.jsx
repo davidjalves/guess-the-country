@@ -52,7 +52,7 @@ export const Home = () => {
             .replace(/\s/g, "")
             .replace(",", "")
             .replace("ç", "c")
-            .replace("é", "a")
+            .replace("é", "e")
             .replace("á", "a")
             .replace("ã", "a")
             .replace("â", "a")
