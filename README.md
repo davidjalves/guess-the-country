@@ -1,2 +1,5 @@
-# guess_the_country
-A simple web game to guess the country's flag
+# Guess the country
+A simple web game to guess a country's flag
+
+## License
+<a href="https://github.com/davidjalves/guess-the-country/blob/main/LICENSE">MIT</a>
