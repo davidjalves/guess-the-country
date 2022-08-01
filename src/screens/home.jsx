@@ -173,7 +173,8 @@ export const Home = () => {
             fontSize: 45,
             display: "flex",
             paddingLeft: "2mm",
-            
+            alignContent:"center",
+            justifyContent:"center"
            
           }}
         >
@@ -184,7 +185,8 @@ export const Home = () => {
             style={{
               display: "flex",
               paddingBottom: "12mm",
-             
+             alignContent:"center",
+             justifyContent:"center"
               
             }}
           >
@@ -194,21 +196,21 @@ export const Home = () => {
                 loadCountry();
               }}
             >
-              <div className="font-link" style={{ fontSize: 20 }}>
+              < div className="font-link" style={{ fontSize: 20 }}>
                 {" "}
                 START
-              </div>
+              </div >
             </Button>
           </div>
         )}
         {seconds === 0 && start === true && (
-          <Card>
+          <Card >
             <Card.Title>
               <center className="font-link" style={{ fontSize: 30 }}>
                 GAME OVER
               </center>
             </Card.Title>
-            <Card.Body>
+            <Card.Body >
               <center className="font-link" style={{ fontSize: 30 }}>
                 Your score in this game: {score} points<br></br>Your highest
                 score: {maxScore} points
