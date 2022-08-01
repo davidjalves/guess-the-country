@@ -204,7 +204,7 @@ export const Home = () => {
           </div>
         )}
         {seconds === 0 && start === true && (
-          <Card >
+          <Card style={{width:"90vw"}}>
             <Card.Title>
               <center className="font-link" style={{ fontSize: 30 }}>
                 GAME OVER
@@ -228,6 +228,7 @@ export const Home = () => {
                       justifyContent: "center",
                       alignContent: "center",
                       flexDirection: "column",
+                      margin:"2mm"
                     }}
                     variant="success"
                     onClick={() => {
@@ -258,6 +259,7 @@ export const Home = () => {
                         justifyContent: "center",
                         alignContent: "center",
                         flexDirection: "column",
+                        margin:"2mm"
                       }}
                       as={Col}
                       variant="primary"
