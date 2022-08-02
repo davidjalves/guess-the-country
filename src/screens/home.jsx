@@ -426,7 +426,7 @@ export const Home = () => {
             <center className="font-link" style={{ fontSize: 20 }}>
               The countries flags are provided by flagpedia.net API
             </center>
-            <center className="font-link" style={{ fontSize: 30 }}>
+            <center className="font-link" style={{ fontSize: 20 }}>
               Made by{" "}
               <a
                 href="https://github.com/davidjalves"
